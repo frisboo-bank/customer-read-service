@@ -1,0 +1,7 @@
+appOptions:
+  name: "customer-service"
+  description: "service to handle customers"
+
+logOptions:
+  type: logrus
+  level: info
