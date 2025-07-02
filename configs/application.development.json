@@ -1,0 +1,36 @@
+{
+  "$schema": "./config-schema.json",
+  "appOptions": {
+    "name": "customers-service"
+  },
+  "httpServerOptions": {
+    "host": "127.0.0.1",
+    "port": "8000",
+    "development": true
+  },
+  "rpcServerOptions": {
+    "host": "127.0.0.1",
+    "port": "9000"
+  },
+  "dbOptions": [
+    {
+      "name": "default",
+      "host": "customers-service-db",
+      "port": "5432",
+      "user": "postgres",
+      "password": "postgres",
+      "sslMode": false,
+      "dbName": "customers-service"
+    }
+  ],
+  "logOptions": {
+    "type": "logrus",
+    "level": "debug"
+  },
+  "migrationOptions": [
+    {
+      "dbName": "default",
+      "migrationDir": "db/migrations/default/"
+    }
+  ]
+}

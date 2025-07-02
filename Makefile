@@ -1,6 +1,6 @@
 GOPATH:=$(shell go env GOPATH)
 
-MODULE  := frisboo-bank/customer-service
+MODULE  := frisboo-bank/customers-service
 
 # Project info
 BUILD   := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -10,6 +10,15 @@ VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo v0.0
 GOOS    ?= $(shell go env GOOS)
 GOARCH  ?= $(shell go env GOARCH)
 MARCH   := $(GOOS)-$(GOARCH)
+
+# Local DB info
+DB_NAME = customers-service
+DB_HOST = localhost
+DB_USER = postgres
+DB_PASS = postgres
+DB_HOST = localhost
+DB_PORT = 5432
+SSL_MODE = disable
 
 # Tool versions
 GCI_VERSION := latest
@@ -31,7 +40,7 @@ LDFLAGS := \
 # Go Parameters
 GO := go
 PKG := ./...
-BOOTSTRAP := ./cmd/service
+BOOTSTRAP := ./cmd/app/
 BIN_DIR := bin
 COVERAGE := /tmp/$(NAME)-coverage.out
 
@@ -98,13 +107,30 @@ run:
 .PHONY: watch
 watch:
 	@go run github.com/air-verse/air@latest \
-		--build.cmd "" \
+		--root "." \
+		--build.cmd "make build" \
 	  --build.bin "" \
-	  --build.full_bin "go run $(BOOTSTRAP)/main.go" \
+	  --build.full_bin "go run $(BOOTSTRAP)main.go" \
 	  --build.delay "100" \
+		--build.include_dir "../pkg/" \
 		--build.exclude_dir "" \
 		--build.include_ext "go, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
 		--misc.clean_on_exit "true"
+
+## db/create-container: create the db container
+.PHONY: db/create-container
+db/create-container:
+	docker run --name $(NAME)-db -p $(DB_PORT)\:$(DB_PORT) -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASS) -d postgres:alpine
+
+## db/create: create the test database
+.PHONY: db/create
+db/create:
+	docker exec -it $(NAME)-db createdb -U $(DB_USER) -O $(DB_USER) $(DB_NAME)
+
+## db/drop: drop the test database
+.PHONY: db/drop
+db/drop:
+	docker exec -it $(NAME)-db dropdb -U $(DB_USER) $(DB_NAME)
 
 #
 # PRODUCTION
@@ -119,9 +145,19 @@ build/release:
 optimize:
 	upx -9 -k $(BIN_DIR)/$(NAME) || echo "UPX not installed. Skip..."
 
+## build/docker: build the docker image
+.PHONY: build/docker
+build/docker:
+	docker build -D -t $(NAME):$(VERSION) .
+
 #
 # OPERATIONS
 #
+#.PHONY: init
+init:
+	@go get -u google.golang.org/protobuf/proto
+	@go install github.com/golang/protobuf/protoc-gen-go@latest
+
 ## push: push changes to the remote Git repository
 .PHONY: push
 push: tidy audit lint test no-dirty
@@ -129,7 +165,7 @@ push: tidy audit lint test no-dirty
 
 ## production/deploy: deploy the application to production
 .PHONY: production/deploy
-production/deploy: confirm tidy audit lint test no-dirty build/release compress
+production/deploy: tidy audit lint test no-dirty build/release compress
 
 #
 # HELPERS
@@ -154,4 +190,3 @@ confirm:
 .PHONY: no-dirty
 no-dirty:
 	git diff --exit-code
-
