@@ -3,8 +3,9 @@ package app
 import (
 	"context"
 	"fmt"
-	"frisboo-bank/customers-service/internal/shared/configurations/customers"
 	"os"
+
+	"frisboo-bank/customers-service/internal/shared/configurations/customers"
 )
 
 type Bootstrap struct{}

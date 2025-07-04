@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"frisboo-bank/customers-service/internal/shared/app"
 	"os"
+
+	"frisboo-bank/customers-service/internal/shared/app"
 
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
