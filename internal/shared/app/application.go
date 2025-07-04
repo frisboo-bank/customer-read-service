@@ -2,6 +2,7 @@ package app
 
 import (
 	"frisboo-bank/customers-service/internal/shared/configurations/customers"
+
 	"frisboo-bank/pkg/application"
 	"frisboo-bank/pkg/container"
 	"frisboo-bank/pkg/environment"
