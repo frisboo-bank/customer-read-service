@@ -1,12 +1,13 @@
 package customers
 
 import (
+	"net/http"
+
 	"frisboo-bank/customers-service/internal/shared/configurations/customers/infrastructure"
+
 	"frisboo-bank/pkg/application/contracts"
 	"frisboo-bank/pkg/container"
 	httpServerContacts "frisboo-bank/pkg/http/http_server/contracts"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
