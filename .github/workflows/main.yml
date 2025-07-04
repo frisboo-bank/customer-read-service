@@ -1,0 +1,288 @@
+---
+name: 'Comprehensive Code Analysis and Security'
+
+'on':
+  push:
+    branches: [main, DEV-V1]
+  pull_request:
+    branches: [main, DEV-V1]
+  schedule:
+    # Run weekly on Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+
+env:
+  GO_VERSION: '1.24.3'
+  GOLANGCI_LINT_VERSION: 'v1.62.2'
+  CHECKMAKE_VERSION: '0.2.2'
+  SQLFLUFF_VERSION: '3.2.5'
+  HADOLINT_VERSION: 'v2.12.0'
+  TRIVY_VERSION: '0.57.1'
+
+jobs:
+  # Job 1: CodeQL Security Analysis for Go
+  codeql-analysis:
+    name: 'CodeQL Security Analysis'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['go']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+
+  # Job 2: Go Linting with golangci-lint
+  golangci-lint:
+    name: 'Go Linting (golangci-lint)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          args: --timeout=5m --config=.golangci.yml
+          working-directory: .
+
+  # Job 3: Makefile Linting with checkmake
+  checkmake-lint:
+    name: 'Makefile Linting (checkmake)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install checkmake
+        run: |
+          curl -sSfL https://github.com/mrtazz/checkmake/releases/download/${{ env.CHECKMAKE_VERSION }}/checkmake-${{ env.CHECKMAKE_VERSION }}.linux.amd64 -o checkmake
+          chmod +x checkmake
+          sudo mv checkmake /usr/local/bin/
+
+      - name: Run checkmake on Makefile
+        run: checkmake Makefile
+
+  # Job 4: SQL Linting with sqlfluff
+  sqlfluff-lint:
+    name: 'SQL Linting (sqlfluff)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-sqlfluff-${{ env.SQLFLUFF_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-pip-sqlfluff-
+
+      - name: Install sqlfluff
+        run: pip install sqlfluff==${{ env.SQLFLUFF_VERSION }}
+
+      - name: Create sqlfluff config
+        run: |
+          cat > .sqlfluff <<EOF
+          [sqlfluff]
+          dialect = postgres
+          templater = raw
+          
+          [sqlfluff:indentation]
+          indented_joins = false
+          indented_ctes = false
+          template_blocks_indent = true
+          
+          [sqlfluff:rules]
+          tab_space_size = 4
+          max_line_length = 120
+          indent_unit = space
+          comma_style = trailing
+          allow_scalar = true
+          single_table_references = consistent
+          unquoted_identifiers_policy = all
+          
+          [sqlfluff:rules:capitalisation.keywords]
+          capitalisation_policy = upper
+          
+          [sqlfluff:rules:capitalisation.identifiers]
+          capitalisation_policy = lower
+          
+          [sqlfluff:rules:capitalisation.functions]
+          capitalisation_policy = upper
+          
+          [sqlfluff:rules:capitalisation.literals]
+          capitalisation_policy = upper
+          EOF
+
+      - name: Run sqlfluff on SQL files
+        run: |
+          if [ -d "db/migrations" ]; then
+            sqlfluff lint db/migrations/ --format github-annotation-native
+          else
+            echo "No SQL migration files found to lint"
+          fi
+
+  # Job 5: Dockerfile Linting with hadolint
+  hadolint-lint:
+    name: 'Dockerfile Linting (hadolint)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          format: sarif
+          output-file: hadolint-results.sarif
+          no-color: true
+
+      - name: Upload hadolint results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: hadolint-results.sarif
+          wait-for-processing: true
+
+  # Job 6: Docker Image Vulnerability Scanning with Trivy
+  trivy-scan:
+    name: 'Docker Vulnerability Scanning (Trivy)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t customer-service:latest .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'customer-service:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          wait-for-processing: true
+
+      - name: Run Trivy for high/critical vulnerabilities
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'customer-service:latest'
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
+
+  # Job 7: Dependabot Reminder
+  dependabot-reminder:
+    name: 'Dependabot Status Check'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for Dependabot PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🤖 Dependabot Status Check"
+          echo "=========================="
+          
+          # Check for open Dependabot PRs
+          DEPENDABOT_PRS=$(gh pr list --author "app/dependabot" --state open --json number,title,url)
+          
+          if [ "$DEPENDABOT_PRS" != "[]" ]; then
+            echo "📋 Open Dependabot PRs found:"
+            echo "$DEPENDABOT_PRS" | jq -r '.[] | "- #\(.number): \(.title) (\(.url))"'
+            echo ""
+            echo "Please review and merge these dependency updates when appropriate."
+          else
+            echo "✅ No open Dependabot PRs found."
+          fi
+          
+          # Check Dependabot configuration
+          if [ -f ".github/dependabot.yml" ]; then
+            echo ""
+            echo "✅ Dependabot configuration found and active."
+            echo "📅 Dependabot runs weekly to check for dependency updates."
+          else
+            echo ""
+            echo "⚠️  No Dependabot configuration found. Consider adding .github/dependabot.yml"
+          fi
+
+  # Summary job that requires all linting jobs to pass
+  all-checks-passed:
+    name: 'All Checks Passed'
+    runs-on: ubuntu-latest
+    needs: [codeql-analysis, golangci-lint, checkmake-lint, sqlfluff-lint, hadolint-lint, trivy-scan]
+    if: always()
+    steps:
+      - name: Check all jobs status
+        run: |
+          if [[ "${{ needs.codeql-analysis.result }}" == "success" && \
+                "${{ needs.golangci-lint.result }}" == "success" && \
+                "${{ needs.checkmake-lint.result }}" == "success" && \
+                "${{ needs.sqlfluff-lint.result }}" == "success" && \
+                "${{ needs.hadolint-lint.result }}" == "success" && \
+                "${{ needs.trivy-scan.result }}" == "success" ]]; then
+            echo "✅ All code analysis and security checks passed!"
+            exit 0
+          else
+            echo "❌ Some checks failed. Please review the failed jobs above."
+            exit 1
+          fi
