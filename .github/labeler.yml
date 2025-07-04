@@ -1,193 +1,140 @@
-# GitHub Labeler Configuration
-# This file defines automated labeling rules for pull requests based on file patterns
-
-# Go Source Code
-"go":
+---
+go:
   - "**/*.go"
-
-"go/api":
-  - "internal/**/api/**/*.go"
-  - "internal/**/handlers/**/*.go"
-  - "internal/**/controllers/**/*.go"
-  - "cmd/app/**/*.go"
-
-"go/internal":
-  - "internal/**/*.go"
-
-"go/models":
-  - "internal/**/models/**/*.go"
-  - "internal/**/entities/**/*.go"
-
-"go/services":
-  - "internal/**/services/**/*.go"
-  - "internal/**/service/**/*.go"
-
-"go/repositories":
-  - "internal/**/repositories/**/*.go"
-  - "internal/**/repository/**/*.go"
-
-"go/configurations":
-  - "internal/**/configurations/**/*.go"
-  - "internal/**/config/**/*.go"
-
-"go/contracts":
-  - "internal/**/contracts/**/*.go"
-  - "internal/**/interfaces/**/*.go"
-
-"go/dtos":
-  - "internal/**/dtos/**/*.go"
-  - "internal/**/dto/**/*.go"
-
-# Database and Migrations
-"database":
-  - "db/**/*"
+go/api:
+  - internal/**/api/**/*.go
+  - internal/**/handlers/**/*.go
+  - internal/**/controllers/**/*.go
+  - cmd/app/**/*.go
+go/internal:
+  - internal/**/*.go
+go/models:
+  - internal/**/models/**/*.go
+  - internal/**/entities/**/*.go
+go/services:
+  - internal/**/services/**/*.go
+  - internal/**/service/**/*.go
+go/repositories:
+  - internal/**/repositories/**/*.go
+  - internal/**/repository/**/*.go
+go/configurations:
+  - internal/**/configurations/**/*.go
+  - internal/**/config/**/*.go
+go/contracts:
+  - internal/**/contracts/**/*.go
+  - internal/**/interfaces/**/*.go
+go/dtos:
+  - internal/**/dtos/**/*.go
+  - internal/**/dto/**/*.go
+database:
+  - db/**/*
   - "**/*.sql"
-
-"migrations":
-  - "db/migrations/**/*"
+migrations:
+  - db/migrations/**/*
   - "**/migrations/**/*"
-
-# Docker
-"docker":
-  - "Dockerfile*"
-  - "docker-compose*.yml"
-  - "docker-compose*.yaml"
-  - ".dockerignore"
+docker:
+  - Dockerfile*
+  - docker-compose*.yml
+  - docker-compose*.yaml
+  - .dockerignore
   - "**/.dockerignore"
-
-# GitHub Workflows and Actions
-"github-actions":
-  - ".github/workflows/**/*"
-  - ".github/actions/**/*"
-
-# Documentation
-"documentation":
+github-actions:
+  - .github/workflows/**/*
+  - .github/actions/**/*
+documentation:
   - "**/*.md"
-  - "docs/**/*"
+  - docs/**/*
   - "**/*.rst"
   - "**/*.txt"
-  - "CHANGELOG*"
-  - "README*"
-  - "CONTRIBUTING*"
-  - "LICENSE*"
-
-"security":
-  - "SECURITY.md"
+  - CHANGELOG*
+  - README*
+  - CONTRIBUTING*
+  - LICENSE*
+security:
+  - SECURITY.md
   - "**/*security*"
-  - ".github/SECURITY.md"
-
-# Configuration Files
-"configuration":
-  - "configs/**/*"
+  - .github/SECURITY.md
+configuration:
+  - configs/**/*
   - "**/*.toml"
   - "**/*.ini"
   - "**/*.properties"
   - "**/*.env*"
-  - ".env*"
-
-"json-config":
+  - .env*
+json-config:
   - "**/*.json"
   - "!go.sum"
   - "!package-lock.json"
-
-"yaml-config":
+yaml-config:
   - "**/*.yml"
   - "**/*.yaml"
   - "!.github/workflows/**/*"
-
-# Tests
-"tests":
+tests:
   - "**/*_test.go"
   - "**/test/**/*"
   - "**/tests/**/*"
   - "**/*_test_*.go"
-
-# GitHub Metadata
-"github-metadata":
-  - ".github/**/*"
+github-metadata:
+  - .github/**/*
   - "!.github/workflows/**/*"
-
-"dependabot":
-  - ".github/dependabot.yml"
-
-# Scripts and Build Files
-"scripts":
-  - "Makefile"
+dependabot:
+  - .github/dependabot.yml
+scripts:
+  - Makefile
   - "**/*.sh"
-  - "scripts/**/*"
-  - "build/**/*"
-
-"build":
-  - "Makefile"
+  - scripts/**/*
+  - build/**/*
+build:
+  - Makefile
   - "**/build.*"
   - "**/*.mk"
-
-# Go Dependencies and Modules
-"dependencies":
-  - "go.mod"
-  - "go.sum"
-  - "vendor/**/*"
-
-"go-mod":
-  - "go.mod"
-  - "go.sum"
-
-# Application Entry Points
-"cmd":
-  - "cmd/**/*"
-
-"main":
-  - "cmd/**/main.go"
+dependencies:
+  - go.mod
+  - go.sum
+  - vendor/**/*
+go-mod:
+  - go.mod
+  - go.sum
+cmd:
+  - cmd/**/*
+main:
+  - cmd/**/main.go
   - "**/main.go"
-
-# Shared/Common Code
-"shared":
-  - "internal/shared/**/*"
+shared:
+  - internal/shared/**/*
   - "**/shared/**/*"
   - "**/common/**/*"
-
-# Application Specific - Customer Service
-"customers":
-  - "internal/customers/**/*"
-
-# Configuration and Environment Files
-"env-config":
-  - ".air.toml"
-  - "revive-config.toml"
+customers:
+  - internal/customers/**/*
+env-config:
+  - .air.toml
+  - revive-config.toml
   - "**/*.toml"
-
-# Third-party and External
-"third-party":
-  - "vendor/**/*"
-  - "third_party/**/*"
-  - "external/**/*"
-
-# Size-based labels (these are example patterns, actual sizes would be determined by GitHub)
-"size/small":
-  - any: ['**/*']
-    all: ['!**/large_file_pattern']
-
-"size/medium":
-  - any: ['**/*']
-
-"size/large":
-  - any: ['**/*']
-
-# Hot paths and critical files
-"critical":
-  - "cmd/app/main.go"
-  - "internal/shared/app/**/*"
-  - "configs/application.production.json"
-
-# DevOps and Infrastructure
-"infrastructure":
-  - "infrastructure/**/*"
-  - "deploy/**/*"
-  - "k8s/**/*"
+third-party:
+  - vendor/**/*
+  - third_party/**/*
+  - external/**/*
+size/small:
+  - any:
+      - "**/*"
+    all:
+      - "!**/large_file_pattern"
+size/medium:
+  - any:
+      - "**/*"
+size/large:
+  - any:
+      - "**/*"
+critical:
+  - cmd/app/main.go
+  - internal/shared/app/**/*
+  - configs/application.production.json
+infrastructure:
+  - infrastructure/**/*
+  - deploy/**/*
+  - k8s/**/*
   - "**/*deploy*"
-
-# Performance sensitive
-"performance":
+performance:
   - "**/*performance*"
   - "**/*benchmark*"
   - "**/*_bench.go"
