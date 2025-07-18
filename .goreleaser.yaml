@@ -77,7 +77,7 @@ dockers:
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm64"
+      - "--platform=linux/amd64"
     skip_push: auto
     extra_files:
       - ./configs/application.json
