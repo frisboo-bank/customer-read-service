@@ -80,7 +80,6 @@ dockers:
       - "--platform=linux/amd64"
     skip_push: auto
     extra_files:
-      - ./configs/application.json
       - ./configs/application.production.json
 
 docker_signs:
