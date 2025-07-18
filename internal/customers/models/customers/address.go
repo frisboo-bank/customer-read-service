@@ -14,7 +14,7 @@ type Address struct {
 	City         string
 	Region       string
 	PostalCode   string
-	CountryId    string
+	CountryID    string
 	IsPrimary    bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

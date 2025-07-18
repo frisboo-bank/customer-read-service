@@ -15,9 +15,10 @@ func NewCustomersApplicationBuilder() *CustomersApplicationBuilder {
 
 func (b *CustomersApplicationBuilder) Build() *CustomersApplication {
 	return NewCustomerApplication(
-		b.GetModules(),
-		b.GetProviders(),
-		b.GetDecorators(),
+		b.Modules(),
+		b.Providers(),
+		b.Decorators(),
+		b.Container(),
 		b.Logger(),
 		b.Environment(),
 	)

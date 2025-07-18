@@ -1,20 +1,21 @@
 {
   "$schema": "./config-schema.json",
-  "appoptions": {
+  "app": {
     "name": "customers-service"
   },
-  "healthoptions": {},
-  "httpserveroptions": {
+  "health": {},
+  "httpServer": {
     "type": "gin",
     "host": "127.0.0.1",
     "port": "8000",
     "development": true
   },
-  "rpcserveroptions": {
+  "rpcServer": {
+    "type": "grpc",
     "host": "127.0.0.1",
     "port": "9000"
   },
-  "dboptions": [
+  "db": [
     {
       "name": "default",
       "host": "customers-service-db",
@@ -25,11 +26,11 @@
       "dbname": "customers-service"
     }
   ],
-  "logoptions": {
+  "logger": {
     "type": "logrus",
     "level": "debug"
   },
-  "migrationoptions": [
+  "migration": [
     {
       "dbname": "default",
       "migrationdir": "db/migrations/default/"

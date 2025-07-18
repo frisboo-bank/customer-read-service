@@ -7,7 +7,7 @@ import (
 )
 
 type CustomerDto struct {
-	Id                  uuid.UUID
+	ID                  uuid.UUID
 	FirstName           string
 	MiddleName          string
 	LastName            string

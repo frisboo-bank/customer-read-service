@@ -1,13 +1,13 @@
 package customers
 
 import (
-	"frisboo-bank/customers-service/internal/shared/configurations/customers/infrastructure"
-	"frisboo-bank/pkg/application/contracts"
-	"frisboo-bank/pkg/container"
 	"net/http"
 
-	httpServerContacts "frisboo-bank/pkg/http/http_server/contracts"
+	"frisboo-bank/customers-service/internal/shared/configurations/customers/infrastructure"
 
+	"frisboo-bank/pkg/application/contracts"
+	"frisboo-bank/pkg/container/dependencies/invoker"
+	httpServerContacts "frisboo-bank/pkg/http/http_server/contracts"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +34,7 @@ func (c *CustomersServiceConfigurator) ConfigureCustomers() error {
 }
 
 func (c *CustomersServiceConfigurator) MapCustomersEndpoints() {
-	c.ResolveFunc(container.Invoke(func(httpServer httpServerContacts.HTTPServer) {
+	c.ResolveFunc(invoker.Invoke(func(httpServer httpServerContacts.HTTPServer) {
 		httpServer.RouteBuilder().RegisterRoutes(func(server any) {
 			server.(*gin.Engine).GET("", func(ctx *gin.Context) {
 				ctx.String(http.StatusOK, "%s is running", "customer service")
