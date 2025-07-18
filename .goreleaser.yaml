@@ -55,7 +55,6 @@ sboms:
 archives:
   - formats: [tar.gz]
     files:
-      - ./configs/application.json
       - ./configs/application.production.json
     name_template: >-
       {{ .ProjectName }}_
