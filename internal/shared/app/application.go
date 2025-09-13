@@ -4,7 +4,10 @@ import (
 	"frisboo-bank/customers-service/internal/shared/configurations/customers"
 
 	"frisboo-bank/pkg/application"
-	"frisboo-bank/pkg/container"
+	containerContracts "frisboo-bank/pkg/container/contracts"
+	"frisboo-bank/pkg/container/dependencies/decorator"
+	"frisboo-bank/pkg/container/dependencies/module"
+	"frisboo-bank/pkg/container/dependencies/provider"
 	"frisboo-bank/pkg/environment"
 	loggerContracts "frisboo-bank/pkg/logger/contracts"
 )
@@ -14,9 +17,10 @@ type CustomersApplication struct {
 }
 
 func NewCustomerApplication(
-	modules []container.Module,
-	providers []container.Provider,
-	decorators []container.Decorator,
+	modules []module.Module,
+	providers []provider.Provider,
+	decorators []decorator.Decorator,
+	container containerContracts.Container,
 	logger loggerContracts.Logger,
 	environment environment.Environment,
 ) *CustomersApplication {
@@ -24,6 +28,7 @@ func NewCustomerApplication(
 		modules,
 		providers,
 		decorators,
+		container,
 		logger,
 		environment,
 	)
