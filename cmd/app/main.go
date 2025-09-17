@@ -16,7 +16,9 @@ var rootCmd = &cobra.Command{
 	Short:            "services to get or manipulate customers",
 	TraverseChildren: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		app.NewBootstrap().Run()
+		if err := app.NewBootstrap().Run(); err != nil {
+			panic(err)
+		}
 	},
 }
 

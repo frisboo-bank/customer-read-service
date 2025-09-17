@@ -1,0 +1,21 @@
+app:
+  name: customers-detail-service
+  logger: main
+
+httpServers:
+  instances:
+    main:
+      type: gin
+      port: 8000
+      logger: httpserver-main
+
+loggers:
+  type: logrus
+  instances:
+    main:
+      prefix: customers-detail-service
+    httpserver-main:
+      prefix: httpserver (main)
+
+container:
+  type: dig
