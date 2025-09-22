@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"frisboo-bank/customers-service/internal/shared/app"
 
@@ -31,8 +30,7 @@ func main() {
 		putils.LettersFromStringWithStyle(" Service", pterm.FgLightBlue.ToStyle()),
 	).Render()
 
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
+	if err := rootCmd.Execute(); err != nil {
+		panic(err)
 	}
 }
