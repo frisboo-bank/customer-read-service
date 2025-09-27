@@ -45,7 +45,7 @@ func (c *CustomersServiceConfigurator) MapCustomersEndpoints() {
 		srv := params.HTTPServer
 
 		srv.RouteBuilder().RegisterRoutes(func(server any) {
-			server.(*echo.Echo).GET("", func(c echo.Context) error {
+			server.(*echo.Echo).GET("/", func(c echo.Context) error {
 				return c.String(http.StatusOK, fmt.Sprintf("%s is running", "customer service"))
 			})
 		})
