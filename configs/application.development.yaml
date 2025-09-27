@@ -3,19 +3,33 @@ app:
   logger: main
 
 httpServers:
+  host: 127.0.0.1
   instances:
     main:
-      type: gin
+      type: echo
       port: 8000
-      logger: httpserver-main
+      debug: true
+      logger: httpservermain
+
+rpcServers:
+  host: 0.0.0.0
+  instances:
+    main:
+      type: grpc
+      port: 9000
+      debug: true
+      logger: rpcservermain
 
 loggers:
   type: logrus
+  level: debug
   instances:
     main:
       prefix: customers-detail-service
-    httpserver-main:
-      prefix: httpserver (main)
+    httpservermain:
+      prefix: http-server (main)
+    rpcservermain:
+      prefix: rpc-server (main)
 
 container:
   type: dig

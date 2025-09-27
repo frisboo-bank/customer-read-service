@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 
 	"frisboo-bank/customers-service/internal/shared/configurations/customers"
 	"frisboo-bank/pkg/syserrors"
@@ -30,12 +29,13 @@ func (b *Bootstrap) Run() error {
 
 	app.MapCustomersEndpoints()
 
-	fmt.Println("Starting customers_service application...")
-	defer fmt.Println("Service customers_service stopped")
+	app.Logger().Info("Starting application...")
 
 	if err := app.Start(context.Background()); err != nil {
 		return syserrors.Wrap(err, "failed to start app")
 	}
+
+	app.Logger().Info("Application stopped")
 
 	return nil
 }
