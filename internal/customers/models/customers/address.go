@@ -1,9 +1,9 @@
-package models
+package customers
 
 import "time"
 
 type Address struct {
-	Id           string
+	ID           string
 	AddressLine1 string
 	AddressLine2 string
 	AddressLine3 string
@@ -14,7 +14,7 @@ type Address struct {
 	City         string
 	Region       string
 	PostalCode   string
-	CountryId    string
+	CountryID    string
 	IsPrimary    bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
