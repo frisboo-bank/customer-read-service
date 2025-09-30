@@ -1,0 +1,45 @@
+app:
+  name: customers-detail-service
+  logger: main
+
+httpServers:
+  instances:
+    main:
+      type: echo
+      host: 127.0.0.1
+      port: 8000
+      debug: true
+      logger: httpservermain
+
+rpcServers:
+  instances:
+    main:
+      type: grpc
+      host: 127.0.0.1
+      port: 9000
+      debug: true
+      logger: rpcservermain
+
+dbClients:
+  instances:
+    main:
+      type: mongodb
+      host: 127.0.0.1
+      port: 27017
+      user: customers-detail
+      password: customers-detail
+      sslMode: false
+
+loggers:
+  type: logrus
+  level: debug
+  instances:
+    main:
+      prefix: customers-detail-service
+    httpservermain:
+      prefix: http-server (main)
+    rpcservermain:
+      prefix: rpc-server (main)
+
+container:
+  type: dig

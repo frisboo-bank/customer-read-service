@@ -94,7 +94,7 @@ test/coverage:
 ## build: build the application
 .PHONY: build
 build:
-	@echo "Buiding $(NAME) $(VERSION) ($(COMMIT)) for $(MARCH)"
+	@echo "Building $(NAME) $(VERSION) ($(COMMIT)) for $(MARCH)"
 	@mkdir -p $(BIN_DIR)
 	go build -ldflags="$(LDFLAGS)" -o $(BIN_DIR)/$(NAME) $(BOOTSTRAP)
 

@@ -1,5 +1,7 @@
 package customers
 
-import "frisboo-bank/pkg/container"
+import (
+	"frisboo-bank/pkg/container/dependencies/module"
+)
 
-var Module = container.NewModule("customers")
+var Module = module.ModuleFunc("customers")

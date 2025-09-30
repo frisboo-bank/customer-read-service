@@ -9,16 +9,21 @@ type CustomersApplicationBuilder struct {
 	contracts.ApplicationBuilder
 }
 
-func NewCustomersApplicationBuilder() *CustomersApplicationBuilder {
-	return &CustomersApplicationBuilder{application.NewApplicationBuilder()}
+func NewCustomersApplicationBuilder() (*CustomersApplicationBuilder, error) {
+	b, err := application.NewApplicationBuilder()
+	if err != nil {
+		return nil, err
+	}
+
+	return &CustomersApplicationBuilder{b}, nil
 }
 
 func (b *CustomersApplicationBuilder) Build() *CustomersApplication {
 	return NewCustomerApplication(
-		b.GetModules(),
-		b.GetProviders(),
-		b.GetDecorators(),
+		b.Modules(),
+		b.Providers(),
+		b.Decorators(),
+		b.Container(),
 		b.Logger(),
-		b.Environment(),
-	)
+		b.Environment())
 }
