@@ -4,33 +4,33 @@ import (
 	"fmt"
 
 	"frisboo-bank/customers-service/internal/shared/app"
+	"frisboo-bank/pkg/application/command"
 
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:              "customers-service",
-	Short:            "services to get or manipulate customers",
-	TraverseChildren: true,
-	Run: func(cmd *cobra.Command, args []string) {
+// // @contact.name frisboo
+// // @contact.email contact@frisboo-bank.com
+func main() {
+	cli := command.NewApplicationCli(&command.ApplicationCliConfig{
+		Name: "customers-service",
+		Header: func() {
+			fmt.Println("")
+			_ = pterm.DefaultBigText.WithLetters(
+				putils.LettersFromStringWithStyle("Customers", pterm.FgMagenta.ToStyle()),
+				putils.LettersFromStringWithStyle(" Service", pterm.FgLightBlue.ToStyle()),
+			).Render()
+		},
+		Description: "services to get customers",
+	})
+
+	if err := cli.Execute(func(cmd *cobra.Command, args []string) {
 		if err := app.NewBootstrap().Run(); err != nil {
 			panic(err)
 		}
-	},
-}
-
-// @contact.name frisboo
-// @contact.email contact@frisboo.com
-func main() {
-	fmt.Println("")
-	_ = pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("Customers", pterm.FgMagenta.ToStyle()),
-		putils.LettersFromStringWithStyle(" Service", pterm.FgLightBlue.ToStyle()),
-	).Render()
-
-	if err := rootCmd.Execute(); err != nil {
+	}); err != nil {
 		panic(err)
 	}
 }

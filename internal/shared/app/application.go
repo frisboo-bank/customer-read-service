@@ -2,13 +2,14 @@ package app
 
 import (
 	"frisboo-bank/customers-service/internal/shared/configurations/customers"
-
-	"frisboo-bank/pkg/application"
-	containerContracts "frisboo-bank/pkg/container/contracts"
+	"frisboo-bank/pkg/application/app"
 	"frisboo-bank/pkg/container/dependencies/decorator"
 	"frisboo-bank/pkg/container/dependencies/module"
 	"frisboo-bank/pkg/container/dependencies/provider"
 	"frisboo-bank/pkg/environment"
+
+	containerContracts "frisboo-bank/pkg/container/contracts"
+
 	loggerContracts "frisboo-bank/pkg/logger/contracts"
 )
 
@@ -24,16 +25,16 @@ func NewCustomerApplication(
 	logger loggerContracts.Logger,
 	environment environment.Environment,
 ) *CustomersApplication {
-	app := application.NewApplication(
-		modules,
-		providers,
-		decorators,
+	nApp := app.NewApplication(
 		container,
 		logger,
 		environment,
+		modules,
+		providers,
+		decorators,
 	)
 
 	return &CustomersApplication{
-		CustomersServiceConfigurator: customers.NewCustomersServiceConfigurator(app),
+		CustomersServiceConfigurator: customers.NewCustomersServiceConfigurator(nApp),
 	}
 }

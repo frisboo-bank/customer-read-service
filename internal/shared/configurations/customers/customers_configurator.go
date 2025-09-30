@@ -7,10 +7,10 @@ import (
 	"frisboo-bank/customers-service/internal/shared/configurations/customers/infrastructure"
 	"frisboo-bank/pkg/application/contracts"
 	"frisboo-bank/pkg/container/dependencies/invoker"
-	httpServerContacts "frisboo-bank/pkg/http/http_server/contracts"
+	httpserver "frisboo-bank/pkg/http/http_server"
+	httpserverContracts "frisboo-bank/pkg/http/http_server/contracts"
 
 	"github.com/labstack/echo/v4"
-	"go.uber.org/dig"
 )
 
 type CustomersServiceConfigurator struct {
@@ -27,17 +27,12 @@ func NewCustomersServiceConfigurator(app contracts.Application) *CustomersServic
 	}
 }
 
-func (c *CustomersServiceConfigurator) ConfigureCustomers() error {
-	if err := c.infrastructureConfigurator.ConfigureInfrastructure(); err != nil {
-		return err
-	}
-
-	return nil
+func (c *CustomersServiceConfigurator) ConfigureCustomers() {
+	c.infrastructureConfigurator.ConfigureInfrastructures()
 }
 
 type mapCustomersEndpointsParams struct {
-	dig.In
-	HTTPServer httpServerContacts.HTTPServer `name:"http-server:main"`
+	HTTPServer httpserverContracts.HTTPServer `name:"httpServerRef"`
 }
 
 func (c *CustomersServiceConfigurator) MapCustomersEndpoints() {
@@ -49,5 +44,7 @@ func (c *CustomersServiceConfigurator) MapCustomersEndpoints() {
 				return c.String(http.StatusOK, fmt.Sprintf("%s is running", "customer service"))
 			})
 		})
-	}))
+	},
+		invoker.NamedDep("httpServerRef", fmt.Sprintf(httpserver.HTTPServerProvider, "customers-service")),
+	))
 }

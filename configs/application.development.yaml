@@ -1,33 +1,37 @@
 app:
-  name: customers-detail-service
+  name: customers-service
   logger: main
 
-httpServers:
+container:
+  type: dig
+
+http-servers:
   instances:
-    main:
+    customers-service:
       type: echo
       host: 127.0.0.1
-      port: 8000
+      port: 8001
       debug: true
-      logger: httpservermain
+      logger: main-http-server
 
-rpcServers:
+rpc-servers:
   instances:
-    main:
+    customers-service:
       type: grpc
       host: 127.0.0.1
-      port: 9000
+      port: 9001
       debug: true
-      logger: rpcservermain
+      logger: main-rpc-server
 
-dbClients:
+database-clients:
   instances:
-    main:
+    customers-service:
       type: mongodb
-      host: 127.0.0.1
+      host: localhost
       port: 27017
-      user: customers-detail
-      password: customers-detail
+      user: admin
+      password: admin
+      database: customers-service
       sslMode: false
 
 loggers:
@@ -35,11 +39,14 @@ loggers:
   level: debug
   instances:
     main:
-      prefix: customers-detail-service
-    httpservermain:
-      prefix: http-server (main)
-    rpcservermain:
-      prefix: rpc-server (main)
+      prefix: customers-service
+    main-http-server:
+      prefix: customers-service (http-server)
+    main-rpc-server:
+      prefix: customers-service (rpc-server)
 
-container:
-  type: dig
+migrations:
+  instances:
+    customers-service:
+      db: customers-service
+      migrationsDir: db/migrations
