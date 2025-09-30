@@ -3,22 +3,32 @@ app:
   logger: main
 
 httpServers:
-  host: 127.0.0.1
   instances:
     main:
       type: echo
+      host: 127.0.0.1
       port: 8000
       debug: true
       logger: httpservermain
 
 rpcServers:
-  host: 0.0.0.0
   instances:
     main:
       type: grpc
+      host: 127.0.0.1
       port: 9000
       debug: true
       logger: rpcservermain
+
+dbClients:
+  instances:
+    main:
+      type: mongodb
+      host: 127.0.0.1
+      port: 27017
+      user: customers-detail
+      password: customers-detail
+      sslMode: false
 
 loggers:
   type: logrus

@@ -1,4 +1,4 @@
-package models
+package customers
 
 import (
 	"time"
@@ -15,7 +15,7 @@ type CustomerContactInformation struct {
 
 type CustomerIdentificationDocuments struct{}
 
-type CustomerPersonalInformations struct {
+type CustomerPersonalInformation struct {
 	Title                string
 	FirstName            string
 	MiddleName           string
@@ -24,19 +24,19 @@ type CustomerPersonalInformations struct {
 	MiddleNameInEnglish  string
 	LastNameInEnglish    string
 	DateOfBirth          time.Time
-	CountryOfBirthId     string
-	NationalitiesId      []string
-	GenderId             string
+	CountryOfBirthID     string
+	NationalitiesID      []string
+	GenderID             string
 	IsPoliticallyExposed bool
 	IsUSPerson           bool
-	MaritalStatusId      string
+	MaritalStatusID      string
 	NumberOfDependents   uint8
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 }
 
 type CustomerAddresses struct {
-	CorrespondanceAddress []Address
+	CorrespondenceAddress []Address
 	ResidentialAddress    []Address
 	WorkAddress           []Address
 }
@@ -45,7 +45,7 @@ type Customer struct {
 	Cid                     cid.Cid
 	ContactInformation      CustomerContactInformation
 	IdentificationDocuments CustomerIdentificationDocuments
-	PersonalInformation     CustomerPersonalInformations
+	PersonalInformation     CustomerPersonalInformation
 	Addresses               CustomerAddresses
 	CreatedAt               time.Time
 }
