@@ -44,53 +44,11 @@ BOOTSTRAP := ./cmd/app/
 BIN_DIR := bin
 COVERAGE := /tmp/$(NAME)-coverage.out
 
-#
-# default target
-#
-.PHONY: all
-all: help
-
-#
-# QUALITY
-#
-## tidy: tidy modfiles and format .go files
-.PHONY: tidy
-tidy:
-	go fmt ./...
-	go mod tidy -v
-	go run github.com/segmentio/golines@$(GOLINES_VERSION) -m 120 -w --ignore-generated .
-	go run github.com/daixiang0/gci@$(GCI_VERSION) write --skip-generated -s standard -s "prefix($(MODULE))" -s default -s blank -s dot --custom-order  .
-	go run mvdan.cc/gofumpt@$(GOFUMPT_VERSION) -l -w .
-
-## audit: Run quality control checks
-.PHONY: audit
-audit:
-	go mod verify
-	go vet ./...
-	go run honnef.co/go/tools/cmd/staticcheck@$(STATIC_CHECK_VERSION) -checks=all,-ST1000,-U1000 ./...
-	go run golang.org/x/vuln/cmd/govulncheck@$(GO_VULN_CHECK_VERSION) ./...
-	go test -race -buildvcs -vet=off ./...
-
-## lint: Run linters
-.PHONY: lint
-lint:
-	go run github.com/mgechev/revive@$(REVIVE_VERSION) -config revive-config.toml -formatter friendly ./...
-	go run github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_VERSION) run ./...
+include ../../infra/make/backend/core.mk
 
 #
 # DEVELOPMENT
 #
-## test: run all tests
-.PHONY: test
-test:
-	go test -v -race -buildvcs ./...
-
-## test/coverage: run all test and display coverage
-.PHONY: test/coverage
-test/coverage:
-	go test -v -race -buildvcs -coverprofile=$(COVERAGE)  ./...
-	go tool cover -html=$(COVERAGE)
-
 ## build: build the application
 .PHONY: build
 build:
@@ -116,21 +74,6 @@ watch:
 		--build.exclude_dir "" \
 		--build.include_ext "go, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
 		--misc.clean_on_exit "true"
-
-## db/create-container: create the db container
-.PHONY: db/create-container
-db/create-container:
-	docker run --name $(NAME)-db -p $(DB_PORT)\:$(DB_PORT) -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASS) -d postgres:alpine
-
-## db/create: create the test database
-.PHONY: db/create
-db/create:
-	docker exec -it $(NAME)-db createdb -U $(DB_USER) -O $(DB_USER) $(DB_NAME)
-
-## db/drop: drop the test database
-.PHONY: db/drop
-db/drop:
-	docker exec -it $(NAME)-db dropdb -U $(DB_USER) $(DB_NAME)
 
 #
 # PRODUCTION
@@ -167,26 +110,6 @@ push: tidy audit lint test no-dirty
 .PHONY: production/deploy
 production/deploy: tidy audit lint test no-dirty build/release compress
 
-#
-# HELPERS
-#
-.PHONY: help
-help:
-	@echo "Usage:"
-	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /' | sort
-
-.PHONY: version
-version: ## Display build version info
-	@echo "Application: $(NAME)"
-	@echo "Version:     $(VERSION)"
-	@echo "Commit:      $(COMMIT)"
-	@echo "Build Time:  $(BUILD)"
-	@echo "OS-Arch:     $(MARCH)"
-
 .PHONY: confirm
 confirm:
 	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-
-.PHONY: no-dirty
-no-dirty:
-	git diff --exit-code
