@@ -11,8 +11,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// // @contact.name frisboo
-// // @contact.email contact@frisboo-bank.com
+// @contact.name frisboo
+// @contact.email contact@frisboo-bank.com
 func main() {
 	cli := command.NewApplicationCli(&command.ApplicationCliConfig{
 		Name: "customers-service",
