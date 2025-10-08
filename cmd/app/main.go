@@ -23,7 +23,7 @@ func main() {
 				putils.LettersFromStringWithStyle(" Service", pterm.FgLightBlue.ToStyle()),
 			).Render()
 		},
-		Description: "services to get customers",
+		Description: "services to retrieve customers",
 	})
 
 	if err := cli.Execute(func(cmd *cobra.Command, args []string) {
