@@ -29,10 +29,7 @@ func (b *Bootstrap) Run() error {
 		return syserrors.New("failed to cast application to CustomersApplication")
 	}
 
-	// if err := app.ConfigureCustomers(); err != nil {
-	// 	return syserrors.Wrap(err, "failed to configure customers layer")
-	// }
-
+	app.ConfigureCustomers()
 	app.MapCustomersEndpoints()
 
 	app.Logger().Info("Starting application...")
