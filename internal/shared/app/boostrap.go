@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"frisboo-bank/customers-service/internal/shared/configurations/customers"
+
 	"frisboo-bank/pkg/syserrors"
 )
 
@@ -19,14 +20,16 @@ func (b *Bootstrap) Run() error {
 		return syserrors.Wrap(err, "failed to initialize the application builder")
 	}
 
-	appBuilder.ProvideModule(customers.Module)
+	appBuilder.ProvideModule(customers.ModuleFunc(appBuilder))
 
-	app := appBuilder.Build()
+	appIface := appBuilder.Build()
 
-	if err := app.ConfigureCustomers(); err != nil {
-		return syserrors.Wrap(err, "failed to configure customers layer")
+	app, ok := appIface.(*CustomersApplication)
+	if !ok {
+		return syserrors.New("failed to cast application to CustomersApplication")
 	}
 
+	app.ConfigureCustomers()
 	app.MapCustomersEndpoints()
 
 	app.Logger().Info("Starting application...")

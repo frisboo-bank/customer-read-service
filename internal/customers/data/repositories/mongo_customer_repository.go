@@ -5,6 +5,7 @@ import (
 
 	"frisboo-bank/customers-service/internal/customers/contracts"
 	"frisboo-bank/customers-service/internal/customers/models/customers"
+
 	loggerContracts "frisboo-bank/pkg/logger/contracts"
 )
 

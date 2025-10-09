@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"frisboo-bank/pkg/application"
+	"frisboo-bank/pkg/application/builder"
 	"frisboo-bank/pkg/application/contracts"
 )
 
@@ -10,9 +10,8 @@ type CustomersApplicationInfrastructure struct {
 }
 
 func NewCustomersApplicationInfrastructure(app contracts.Application) *CustomersApplicationInfrastructure {
-	return &CustomersApplicationInfrastructure{application.NewApplicationInfrastructure(app)}
+	return &CustomersApplicationInfrastructure{builder.NewApplicationInfrastructure(app)}
 }
 
-func (i *CustomersApplicationInfrastructure) configureMediator() error {
-	return nil
+func (i *CustomersApplicationInfrastructure) configureMediator() {
 }

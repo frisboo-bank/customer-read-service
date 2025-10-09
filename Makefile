@@ -12,13 +12,12 @@ GOARCH  ?= $(shell go env GOARCH)
 MARCH   := $(GOOS)-$(GOARCH)
 
 # Local DB info
-DB_NAME = customers-service
-DB_HOST = localhost
-DB_USER = postgres
-DB_PASS = postgres
-DB_HOST = localhost
-DB_PORT = 5432
-SSL_MODE = disable
+DB_TYPE := mongodb
+DB_CONTAINER_NAME := customers-service-db
+DB_PORT := 27017
+DB_USER := admin
+DB_PASS := admin
+DB_NAME := customers-service
 
 # Tool versions
 GCI_VERSION := latest
