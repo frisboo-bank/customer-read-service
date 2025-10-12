@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"frisboo-bank/customer-read-service/internal/shared/configurations/customers/infrastructure"
-	"frisboo-bank/customer-write-service/internal/customers/constants"
+	"frisboo-bank/customer-read-service/internal/customers/constants"
 	"frisboo-bank/pkg/application/contracts"
 	"frisboo-bank/pkg/container/dependencies/invoker"
 
