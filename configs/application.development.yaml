@@ -25,7 +25,7 @@ rpc-servers:
 
 database-clients:
   instances:
-    customers-read-db:
+    customer-read:
       type: mongodb
       host: localhost
       port: 27017
@@ -47,6 +47,6 @@ loggers:
 
 migrations:
   instances:
-    customer-read-service:
-      db: customers-read-db
+    customer-read:
+      db: customer-read
       migrationsDir: db/migrations
