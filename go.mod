@@ -1,11 +1,10 @@
-module frisboo-bank/customers-service
+module frisboo-bank/customer-read-service
 
 go 1.24.5
 
 require (
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/spf13/cobra v1.10.1
-	go.uber.org/dig v1.19.0
 )
 
 require (

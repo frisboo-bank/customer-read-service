@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"net/http"
 
-	"frisboo-bank/customers-service/internal/shared/configurations/customers/infrastructure"
+	"frisboo-bank/customer-read-service/internal/shared/configurations/customers/infrastructure"
+	"frisboo-bank/customer-write-service/internal/customers/constants"
 	"frisboo-bank/pkg/application/contracts"
 	"frisboo-bank/pkg/container/dependencies/invoker"
+
 	httpserver "frisboo-bank/pkg/http/http_server"
 	httpserverContracts "frisboo-bank/pkg/http/http_server/contracts"
-
-	"github.com/labstack/echo/v4"
 )
+
+type mapCustomersEndpointsParams struct {
+	HTTPServer httpserverContracts.HTTPServer `name:"httpServerRef"`
+}
 
 type CustomersServiceConfigurator struct {
 	contracts.Application
@@ -31,20 +35,17 @@ func (c *CustomersServiceConfigurator) ConfigureCustomers() {
 	c.infrastructureConfigurator.ConfigureInfrastructures()
 }
 
-type mapCustomersEndpointsParams struct {
-	HTTPServer httpserverContracts.HTTPServer `name:"httpServerRef"`
-}
-
 func (c *CustomersServiceConfigurator) MapCustomersEndpoints() {
 	c.ResolveFunc(invoker.InvokerFunc(func(params mapCustomersEndpointsParams) {
 		srv := params.HTTPServer
 
-		srv.RouteBuilder().RegisterRoutes(func(server any) {
-			server.(*echo.Echo).GET("/", func(c echo.Context) error {
-				return c.String(http.StatusOK, fmt.Sprintf("%s is running", "customer service"))
-			})
-		})
+		srv.RouteBuilder().Root().GET("/", http.HandlerFunc())
+
+		srv.RouteBuilder().Root().GET("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintf(w, "%s is running", constants.ServiceName)
+		}))
 	},
-		invoker.NamedDep("httpServerRef", fmt.Sprintf(httpserver.HTTPServerProvider, "customers-service")),
+		invoker.NamedDep("httpServerRef", fmt.Sprintf(httpserver.HTTPServerProvider, "customer-read-service")),
 	))
 }

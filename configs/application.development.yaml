@@ -1,5 +1,5 @@
 app:
-  name: customers-service
+  name: customer-read-service
   logger: main
 
 container:
@@ -7,7 +7,7 @@ container:
 
 http-servers:
   instances:
-    customers-service:
+    main:
       type: echo
       host: 127.0.0.1
       port: 8001
@@ -16,7 +16,7 @@ http-servers:
 
 rpc-servers:
   instances:
-    customers-service:
+    main:
       type: grpc
       host: 127.0.0.1
       port: 9001
@@ -25,13 +25,13 @@ rpc-servers:
 
 database-clients:
   instances:
-    customers-service:
+    customers-read-db:
       type: mongodb
       host: localhost
       port: 27017
       user: admin
       password: admin
-      database: customers-service
+      database: customers-read
       sslMode: false
 
 loggers:
@@ -39,14 +39,14 @@ loggers:
   level: debug
   instances:
     main:
-      prefix: customers-service
+      prefix: customer-read-service
     main-http-server:
-      prefix: customers-service (http-server)
+      prefix: customer-read-service (http-server)
     main-rpc-server:
-      prefix: customers-service (rpc-server)
+      prefix: customer-read-service (rpc-server)
 
 migrations:
   instances:
-    customers-service:
-      db: customers-service
+    customer-read-service:
+      db: customer-read-service
       migrationsDir: db/migrations
