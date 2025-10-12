@@ -48,5 +48,5 @@ loggers:
 migrations:
   instances:
     customer-read-service:
-      db: customer-read-service
+      db: customers-read-db
       migrationsDir: db/migrations
