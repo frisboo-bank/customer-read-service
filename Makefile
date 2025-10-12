@@ -1,6 +1,6 @@
 GOPATH:=$(shell go env GOPATH)
 
-MODULE  := frisboo-bank/customers-service
+MODULE  := frisboo-bank/customer-read-service
 
 # Project info
 BUILD   := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -12,22 +12,15 @@ GOARCH  ?= $(shell go env GOARCH)
 MARCH   := $(GOOS)-$(GOARCH)
 
 # Local DB info
-DB_TYPE := mongodb
-DB_CONTAINER_NAME := customers-service-db
-DB_PORT := 27017
-DB_USER := admin
-DB_PASS := admin
-DB_NAME := customers-service
+DB_TARGETS := db-main
 
-# Tool versions
-GCI_VERSION := latest
-GO_VULN_CHECK_VERSION := latest
-GOFUMPT_VERSION := latest
-GOLANGCI_VERSION := latest
-GOLINES_VERSION := latest
-MOCKERY_VERSION  := latest
-REVIVE_VERSION := latest
-STATIC_CHECK_VERSION := latest
+# Local DB info
+db-main.DB_TYPE = mongodb
+db-main.DB_CONTAINER_NAME = customer-read-db
+db-main.DB_PORT = 27017
+db-main.DB_USER = admin
+db-main.DB_PASS = admin
+db-main.DB_NAME = customer-read
 
 # Build Flags
 LDFLAGS := \
@@ -67,7 +60,7 @@ watch:
 		--root "." \
 		--build.cmd "make build" \
 	  --build.bin "" \
-	  --build.full_bin "go run $(BOOTSTRAP)main.go" \
+	  --build.full_bin "go run $(BOOTSTRAP)/main.go" \
 	  --build.delay "100" \
 		--build.include_dir "../pkg/" \
 		--build.exclude_dir "" \

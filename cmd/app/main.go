@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"frisboo-bank/customers-service/internal/shared/app"
+	"frisboo-bank/customer-read-service/internal/shared/app"
 	"frisboo-bank/pkg/application/command"
 
 	"github.com/pterm/pterm"
@@ -15,11 +15,11 @@ import (
 // @contact.email contact@frisboo-bank.com
 func main() {
 	cli := command.NewApplicationCli(&command.ApplicationCliConfig{
-		Name: "customers-service",
+		Name: "customer-read-service",
 		Header: func() {
 			fmt.Println("")
 			_ = pterm.DefaultBigText.WithLetters(
-				putils.LettersFromStringWithStyle("Customers", pterm.FgMagenta.ToStyle()),
+				putils.LettersFromStringWithStyle("Customers Read", pterm.FgMagenta.ToStyle()),
 				putils.LettersFromStringWithStyle(" Service", pterm.FgLightBlue.ToStyle()),
 			).Render()
 		},

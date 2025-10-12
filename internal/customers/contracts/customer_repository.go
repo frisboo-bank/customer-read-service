@@ -3,7 +3,7 @@ package contracts
 import (
 	"context"
 
-	"frisboo-bank/customers-service/internal/customers/models/customers"
+	"frisboo-bank/customer-read-service/internal/customers/models/customers"
 )
 
 type CustomerRepository interface {

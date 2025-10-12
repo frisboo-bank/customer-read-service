@@ -29,5 +29,4 @@ We take all security reports seriously and will respond as quickly as possible, 
 
 ## Scope
 
-This policy applies to the frisboo-bank/customers-service repository, including all code, configuration, and dependencies.
-
+This policy applies to the frisboo-bank/customer-read-service repository, including all code, configuration, and dependencies.

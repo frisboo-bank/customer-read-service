@@ -3,14 +3,14 @@
 
 version: 2
 
-project_name: customers-service
+project_name: customer-read-service
 
 # before:
 #   hooks:
 #     - make ci
 
 builds:
-  - id: customers-service
+  - id: customer-read-service
     main: ./cmd/app/main.go
     env:
       - CGO_ENABLED=0

@@ -3,9 +3,8 @@ package repositories
 import (
 	"context"
 
-	"frisboo-bank/customers-service/internal/customers/contracts"
-	"frisboo-bank/customers-service/internal/customers/models/customers"
-
+	"frisboo-bank/customer-read-service/internal/customers/contracts"
+	"frisboo-bank/customer-read-service/internal/customers/models/customers"
 	loggerContracts "frisboo-bank/pkg/logger/contracts"
 )
 

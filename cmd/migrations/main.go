@@ -12,7 +12,7 @@ import (
 func main() {
 	fmt.Println("")
 	_ = pterm.DefaultBigText.WithLetters(
-		putils.LettersFromStringWithStyle("Customers", pterm.FgMagenta.ToStyle()),
+		putils.LettersFromStringWithStyle("Customers Read", pterm.FgMagenta.ToStyle()),
 		putils.LettersFromStringWithStyle(" Service", pterm.FgLightBlue.ToStyle()),
 	).Render()
 

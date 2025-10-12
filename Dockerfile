@@ -2,6 +2,6 @@ FROM gcr.io/distroless/static:nonroot
 
 ENV GOTRACEBACK=single
 
-COPY customers-service /services/customers-service
+COPY customer-read-service /services/customer-read-service
 
-ENTRYPOINT [ "/services/customers-service" ]
+ENTRYPOINT [ "/services/customer-read-service" ]
